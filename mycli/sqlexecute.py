@@ -24,7 +24,7 @@ class SQLExecute(object):
 
     tables_query = '''SHOW TABLES'''
 
-    version_query = '''SELECT @@VERSION'''
+    version_query = '''SELECT VERSION()'''
 
     version_comment_query = '''SELECT @@VERSION_COMMENT'''
     version_comment_query_mysql4 = '''SHOW VARIABLES LIKE "version_comment"'''
@@ -285,8 +285,10 @@ class SQLExecute(object):
             else:
                 _logger.debug('Version Comment. sql: %r',
                               self.version_comment_query)
+
                 cur.execute(self.version_comment_query)
-                version_comment = cur.fetchone()[0].lower()
+                version_comment = cur.fetchone()[0] or 'MySQL Community Server (GPL)'
+                version_comment = version_comment.lower()
 
         if 'mariadb' in version_comment:
             product_type = 'mariadb'
